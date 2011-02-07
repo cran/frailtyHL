@@ -1,0 +1,6 @@
+import("Matrix")
+import("numDeriv")
+
+export("frailtyHL")
+
+S3method(summary,frailtyHL)
