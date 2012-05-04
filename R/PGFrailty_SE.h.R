@@ -1,5 +1,5 @@
 PGFrailty_SE.h <-
-function(res1,nrand,q,qcum,dord=1) {
+function(res1,nrand,q,qcum,dord=1,varfixed=FALSE) {
 x<-res1[1][[1]]
 z<-res1[2][[1]]
 y<-res1[3][[1]]
@@ -19,6 +19,7 @@ Hinv<-res1[16][[1]]
 clam0<-res1[17][[1]]
 H<-res1[18][[1]]
 mat<-res1[19][[1]]
+H0<-res1[22][[1]]
 
 ################################################
 ######## SE for frailty parameter ###############
@@ -52,6 +53,7 @@ mat<-res1[19][[1]]
     mat<-(Wi%*%Bi)-(Wi%*%Mi)%*%As%*%(t(Mi)%*%Wi)
     Dinv0<-solve(t(z)%*%mat%*%z+U)
     se_lam<-matrix(0,nrand,1)
+  if (varfixed==FALSE) {
     for (i in 1:nrand){
     ial<-1/alpha_h1[i]
     index1<-qcum[i]+1
@@ -109,6 +111,10 @@ mat<-res1[19][[1]]
     dalp_2<-d2halp+adalp
     se_lam[i]<-sqrt(1/dalp_2)
     }
+   }
+  if (varfixed==TRUE) {
+    for (i in 1:nrand) se_lam[i]<-"NULL"
+  }
     u_h1<-exp(v_h1)
     U <- iD%*%diag(u_h1[,1])
     oq<-matrix(1,qcum[nrand+1],1)
@@ -130,8 +136,9 @@ mat<-res1[19][[1]]
        vv_h1[1:q[i],1]<-v_h1[index1:index2,1]
        uu_h1[1:q[i],1]<-u_h1[index1:index2,1]
        i_alp1<-1/alpha_h1[i]
-       c_alp1<--log(gamma(i_alp1))-(i_alp1*log(alpha_h1[i]))
-       hlike2<- hlike2+t(oq)%*%( (vv_h1-uu_h1)/alpha_h1[i] + c_alp1)
+       c_alp1<-0
+       if (alpha_h[i]>1e-05) c_alp1<--log(gamma(i_alp1))-(i_alp1*log(alpha_h1[i]))
+       if (alpha_h[i]>1e-05) hlike2<- hlike2+t(oq)%*%( (vv_h1-uu_h1)/alpha_h1[i] + c_alp1)
     }
     hlike<-hlike1+hlike2
     pi<-3.14159265359
@@ -142,13 +149,22 @@ mat<-res1[19][[1]]
        secd<-diag(temp4[,1])
        second<-sum(diag(secd))/12
     } else second<-0
-    pvhs<-hlike-0.5*log(det(H22/(2*pi)))
+    cc1<-svd(H22/(2*pi))
+    for (i in 1:length(cc1$d)) if (cc1$d[i]>100000) cc1$d[i]<-1
+    logdet1<-sum(log(abs(cc1$d)))
+##    pvhs<-hlike-0.5*log(det(H22/(2*pi)))
+    pvhs<-hlike-0.5*logdet1
     svhs<-pvhs+second
-    adj1<-( (0.5*(p+qcum[nrand+1]))*log(2*pi)) + (0.5*log(det(Hinv)) )
+    cc1<-svd(Hinv*2*pi)
+    for (i in 1:length(cc1$d)) if (cc1$d[i]<0.00001) cc1$d[i]<-1
+##    adj1<-( (0.5*(p+qcum[nrand+1]))*log(2*pi)) + (0.5*log(det(Hinv)) )
+    logdet1<-sum(log(abs(cc1$d)))
+    adj1<-0.5*logdet1
     hpn1<-hlike+ adj1
     hpn2<-pvhs
     hpn3<-hpn1+second
-    res<-list(se_lam,hlike,hpn1,hpn2,hpn3)
+    df1<-sum(diag(Hinv%*%H0))
+    res<-list(se_lam,hlike,hpn1,hpn2,hpn3,hlike1,df1)
     return(res)
 }
 

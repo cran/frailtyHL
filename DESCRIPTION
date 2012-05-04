@@ -1,8 +1,8 @@
 Package: frailtyHL
 Type: Package
 Title: Frailty Models via H-likelihood
-Version: 1.0
-Date: 2011-02-07
+Version: 1.1
+Date: 2012-05-04
 Author: Il Do HA, Maengseok Noh, Youngjo Lee
 Maintainer: Maengseok Noh <msnoh@pknu.ac.kr>
 Description: The frailtyHL package implements the h-likelihood
@@ -12,10 +12,10 @@ Description: The frailtyHL package implements the h-likelihood
         are allowed. The h-likelihood uses the Laplace approximation
         when the numerical integration is intractable, giving a
         statistically efficient estimation in frailty models.
-Depends: R (>= 2.10.0), Matrix,numDeriv
+Depends: R (>= 2.10.0), Matrix,numDeriv,survival
 License: Unlimited
 LazyLoad: yes
 Respository: CRAN
-Date/Publication: 2011-02-06 09:19:27
-Packaged: 2011-02-06 07:59:03 UTC; Administrator
+Date/Publication: 2012-05-12 16:15:51
+Packaged: 2012-05-11 07:37:11 UTC; Administrator
 Repository: CRAN

@@ -1,5 +1,5 @@
 PNFrailty_SE.h <-
-function(res1,nrand,q,qcum,dord=1) {
+function(res1,nrand,q,qcum,dord=1,varfixed=FALSE) {
 x<-res1[1][[1]]
 z<-res1[2][[1]]
 y<-res1[3][[1]]
@@ -20,6 +20,7 @@ clam0<-res1[17][[1]]
 H<-res1[18][[1]]
 mat<-res1[19][[1]]
 U<-res1[21][[1]]
+H0<-res1[22][[1]]
 
 ################################################
 ######## SE for frailty parameter ###############
@@ -46,6 +47,7 @@ U<-res1[21][[1]]
     done<-matrix(1,idx2,1)
     H22<-solve(t(z)%*%mat%*%z+U)
     Hessian<-matrix(0,nrand,nrand)
+  if (varfixed==FALSE) {
     for (i in 1:nrand) {
         C<-matrix(0,qcum[nrand+1],qcum[nrand+1])
         index1<-qcum[i]+1
@@ -127,6 +129,11 @@ U<-res1[21][[1]]
      }
      iAp<-solve(Hessian)
      se_lam<-sqrt(diag(iAp))
+   }
+     if (varfixed==TRUE) {
+        se_lam<-rep(0,nrand)
+        for (i in 1:nrand) se_lam[i]<-"NULL"
+     }
      eta<-x%*%beta_h1 + z%*%v_h1
      expeta<-exp(eta)
      one<-matrix(1,n,1)
@@ -138,15 +145,19 @@ U<-res1[21][[1]]
      hlike2<-0
      hlike3<-0
      for (i in 1:nrand) {
-         hlike2<-hlike2-(q[i]/2)*log(2*pi)-( (q[i]/2)*log(alpha_h1[i]))
+         if (alpha_h[i]>1e-05) hlike2<-hlike2-(q[i]/2)*log(2*pi)-( (q[i]/2)*log(alpha_h1[i]))
          index1<-qcum[i]+1
          index2<-qcum[i+1]
          vv_h1<-matrix(0,q[i],1)
          vv_h1[1:q[i],1]<-v_h1[index1:index2,1]
-         hlike3<-hlike3-(t(vv_h1)%*%vv_h1)/(2*alpha_h1[i])
+         if (alpha_h[i]>1e-05) hlike3<-hlike3-(t(vv_h1)%*%vv_h1)/(2*alpha_h1[i])
      }
      hliken<-hlike1+hlike2+hlike3
-     adj1<-( (0.5*(p+qcum[nrand+1]))*log(2*pi)) + (0.5*log(det(Hinv)) )
+     cc1<-svd(2*pi*Hinv)
+     for (i in 1:length(cc1$d)) if (cc1$d[i]<0.00001) cc1$d[i]<-1
+     logdet1<-sum(log(abs(cc1$d)))
+##     adj1<- 0.5*(p+qcum[nrand+1])*log(2*pi)+0.5*logdet1
+     adj1<- 0.5*logdet1
      hpn1<-hliken+ adj1
      muu<-exp(x%*%beta_h1)*clam0
      zmu<-t(z)%*%muu
@@ -163,9 +174,14 @@ U<-res1[21][[1]]
          second<-second-sum(diag(S31))/24
     }
     H22<-t(z)%*%mat%*%z+iD
-    hpn2<-hliken-0.5*log(det(H22/(2*pi)))
+    cc1<-svd(H22/(2*pi))
+    for (i in 1:length(cc1$d)) if (cc1$d[i]>100000) cc1$d[i]<-1
+    logdet1<-sum(log(abs(cc1$d)))
+##    hpn2<-hliken-0.5*log(det(H22/(2*pi)))
+    hpn2<-hliken-0.5*logdet1
     hpn3<-hpn1+second
-    res<-list(se_lam,hliken,hpn1,hpn2,hpn3)
+    df1<-sum(diag(Hinv%*%H0))
+    res<-list(se_lam,hliken,hpn1,hpn2,hpn3,hlike1,df1)
     return(res)
 }
 

@@ -1,8 +1,8 @@
-HGLMFrames <-
-function (mc, formula, contrasts, vnms = character(0)) 
+FrailtyFrames <-
+function (mc, formula, contrasts, vnms = character(0),y) 
 {
     mf <- mc
-    m <- match(c("DataMain", "weights", "na.action", "offset"), 
+    m <- match(c("data", "weights", "na.action", "offset"), 
         names(mf), 0)
     mf <- mf[c(1, m)]
     frame.form <- subbars(formula)
@@ -21,7 +21,6 @@ function (mc, formula, contrasts, vnms = character(0))
     mf <- eval(mf, parent.frame(2))
     fe$formula <- fixed.form
     fe <- eval(fe, parent.frame(2))
-    fe
     Y <- model.response(mf, "any")
     if (length(dim(Y)) == 1) {
         nm <- rownames(Y)

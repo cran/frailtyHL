@@ -1,5 +1,5 @@
 PNfrailtyHL <-
-function(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,alpha_h0,mord,dord){
+function(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,alpha_h0,mord,dord,varfixed=FALSE){
     n<-nrow(x)
     p<-ncol(x)
     nrand <- length(z)
@@ -8,8 +8,10 @@ function(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,alpha_h0,mord,dord){
     qcum <- cumsum(c(0, q))
     beta_h<-beta_h0
     v_h<-v_h0
+    for (i in 1:nrand) {
+       if (alpha_h0[i]<0.000001) alpha_h0[i]<-0.000001
+    }
     alpha_h<-alpha_h0
-    
     zz<-z[[1]]
     if (nrand>1) {
         index1<-nrand
@@ -80,6 +82,7 @@ function(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,alpha_h0,mord,dord){
     mat<-(Wi%*%Bi)-(Wi%*%Mi)%*%Adi%*%(t(Mi)%*%Wi)
     U<-iD
     H <- rbind(cbind(t(x)%*%mat%*%x, t(x)%*%mat%*%z), cbind(t(z)%*%mat%*%x, t(z)%*%mat%*%z+U))
+    H0 <- rbind(cbind(t(x)%*%mat%*%x, t(x)%*%mat%*%z), cbind(t(z)%*%mat%*%x, t(z)%*%mat%*%z))
     Hinv<-solve(H)
     be_h0<- rbind(beta_h0, v_h0)
     be_h <- be_h0 + (Hinv%*%dft)
@@ -98,7 +101,7 @@ function(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,alpha_h0,mord,dord){
         gamma<-sum(diag(Hinv[index1:index2,index1:index2]))/alpha_h[i]
         index1<-qcum[i]+1
         index2<-qcum[i+1]
-        alpha_h[i]<-sum(v_h[index1:index2,1]^2)/(q[i]-gamma)
+        if (varfixed==FALSE) alpha_h[i]<-sum(v_h[index1:index2,1]^2)/(q[i]-gamma)
     }
     if (dord==1 | dord==2) {
         H22<-solve(t(z)%*%mat%*%z+U)
@@ -143,10 +146,10 @@ function(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,alpha_h0,mord,dord){
             gamma21<-0
         }
         k21<- q[i]- gamma1- gamma21-sum(v_h[index1:index2,1]^2)/(alpha_h[i])
-        alpha_h[i]<-sum(v_h[index1:index2,1]^2)/(q[i]-gamma1-gamma21)
+        if (varfixed==FALSE) alpha_h[i]<-sum(v_h[index1:index2,1]^2)/(q[i]-gamma1-gamma21)
     }
     }
-    res<-list(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,beta_h,v_h,alpha_h0,alpha_h,dft,Hinv,clam0,H,mat,se_beta_h,U)
+    res<-list(x,z,y,del,Mi,idx2,t2,di,beta_h0,v_h0,beta_h,v_h,alpha_h0,alpha_h,dft,Hinv,clam0,H,mat,se_beta_h,U,H0)
     return(res)
 }
 

@@ -1,5 +1,6 @@
 import("Matrix")
 import("numDeriv")
+import("survival")
 
 export("frailtyHL")
 

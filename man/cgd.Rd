@@ -1,7 +1,6 @@
 \name{cgd}
-\Rdversion{1.0}
+\Rdversion{1.1}
 \alias{cgd}
-%\alias{frailtyHL}
 
 \docType{package}
 
@@ -18,26 +17,28 @@ Censoring occurred at the last observation for all patients, except one, who exp
 \format{
   CGD data set contains 15 columns and 203 rows. A brief description of the data column is given below.
   \describe{
-    \item{\code{hospital}}{Hospital number for 13 hospitals.}
-    \item{\code{patient}}{Patient number for 128 patients.}
-    \item{\code{time}}{The recurrent infection times of each pateient from the different hospitals.}
-    \item{\code{censor}}{Censoring indicator (1=uncensored, 0=censored).}
-    \item{\code{trt}}{Treatment (1=gamma interferon, 0=placebo).}
-    \item{\code{inherit}}{Pattern of inheritance (0=autosomal recessive, 1=X-linked).}
-    \item{\code{age}}{Age of each patient, in years.}
-    \item{\code{height}}{Height of each patient, in cm.}
-    \item{\code{weight}}{Weight of each patient, in kg.}
+    \item{\code{id}}{Patient number for 128 patients.}
+    \item{\code{center}}{Enrolling center number for 13 hospitals.}
+    \item{\code{random}}{Date of randomization.}
+    \item{\code{treat}}{Gamma-interferon treatment(rIFN-g) or placebo(Placebo).}
+    \item{\code{sex}}{Sex of each patient(male, female).}    
+    \item{\code{age}}{Age of each patient at study entry, in years.}
+    \item{\code{height}}{Height of each patient at study entry, in cm.}
+    \item{\code{weight}}{Weight of each patient at study entry, in kg.}
+    \item{\code{inherit}}{Pattern of inheritance (autosomal recessive, X-linked).}
     \item{\code{steroids}}{Using corticosteroids at times of study centry(1=Yes, 0=No).}
     \item{\code{proylac}}{Using prophylactic antibiotics at time of study entry(1=Yes, 0=No).}    
-    \item{\code{sex}}{Sex of each patient(1=male, 0=female).}    
-    \item{\code{h}}{Hospital region(0=U.S.A., 1=Europe).}    
-    \item{\code{longi}}{A longitudinal variable representing the accumulated time from the first infection(in years).}        
+    \item{\code{hos.cat}}{A categorization of the hospital region into 4 groups.}    
+    \item{\code{tstart}}{Start of each time interval.}
     \item{\code{enum}}{Sequence number. For each patient, the infection records are in sequnce number order.}            
+    \item{\code{tstop}}{End of each time interval.}
+    \item{\code{status}}{Censoring indicator (1=uncensored, 0=censored).}
   }
 }
+\references{
+Fleming, T. R. and Harrington, D. R. (1991). Counting processes and survival analysis. Wiley: New York.
 
-
-\references{Fleming, T. R. and Harrington, D. R. (1991). Counting processes and survival analysis. Wiley: New York.
+Therneasu, T. (2012). survival: survival analysis, including penalised likelihood. http://CRAN.R-project.org/package=survival. R pakcage version 2.36-14.
 }
 \examples{
 data(cgd)

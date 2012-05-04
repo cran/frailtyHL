@@ -1,5 +1,5 @@
 \name{frailtyHL-package}
-\Rdversion{1.0}
+\Rdversion{1.1}
 \alias{frailtyHL-package}
 \docType{package}
 \title{H-likelihood Approach for Frailty Models}
@@ -12,12 +12,12 @@ The h-likelihood uses the Laplace approximation when the numerical integration i
 \tabular{ll}{
 Package: \tab frailtyHL\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2011-02-07\cr
+Version: \tab 1.1\cr
+Date: \tab 2012-05-04\cr
 License: \tab Unlimited\cr
 LazyLoad: \tab yes\cr
 }
-This is version 1.0 of the frailtyHL package.
+This is version 1.1 of the frailtyHL package.
 }
 \author{
 Il Do Ha, Manegseok Noh, Youngjo Lee
@@ -42,7 +42,7 @@ h-likelihood. Chapman & Hall: London.
 }
 \examples{
 data(kidney)
-kidney_g12<-frailtyHL(time~sex+age+(1|patient)-1,kidney$censor,kidney,
+kidney_g12<-frailtyHL(Surv(time,status)~sex+age+(1|id),kidney,
 RandDist="Gamma",mord=1,dord=2)
 }
 
