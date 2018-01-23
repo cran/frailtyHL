@@ -1,7 +1,15 @@
+import("methods")
 import("Matrix")
 import("numDeriv")
 import("survival")
-
-export("frailtyHL")
-
-S3method(summary,frailtyHL)
+import("cmprsk")
+importFrom("graphics", "hist", "lines", "par", "plot")
+importFrom("stats", "Gamma", "as.formula", "binomial", "dnorm",
+"gaussian", "glm", "is.empty.model", "model.matrix",
+"model.offset", "model.response", "model.weights",
+"dbinom", "dgamma", "pnorm", "poisson", "qnorm",
+"cor","dist","qqline","qqnorm","supsmu","var")
+importFrom("methods","as", "validObject")
+importFrom("stats", "contrasts", "model.extract", "model.frame",
+             "pchisq", "terms", "uniroot")
+export("frailtyHL","jointmodeling","hlike.frailty","jmfit","frailty.vs","mlmfit","CmpRsk")

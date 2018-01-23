@@ -1,9 +1,7 @@
 frailtyHL <-
-function(formula,data,weights,subset,na.action,RandDist="Normal",mord=0,dord=1,Maxiter=200,convergence=10^-6, varfixed=FALSE, varinit=c(0.1)){
-    require(Matrix)
-    require(numDeriv)
-    require(survival)
-
+function (formula, data, weights, subset, na.action, RandDist = "Normal",mord = 0, dord = 1, Maxiter = 200, 
+          convergence = 10^-6, varfixed = FALSE,varinit = c(0.163),varnonneg=FALSE) 
+{
     Call <- match.call()
     mc <- match.call()
     indx <- match(c("formula", "data", "weights", "subset", "na.action"), 
@@ -22,177 +20,294 @@ function(formula,data,weights,subset,na.action,RandDist="Normal",mord=0,dord=1,M
     special <- c("strata", "cluster")
     temp$formula <- terms(formula, special)
     Terms <- temp[[2]]
-    formula1<-paste(paste(Terms[[2]][[2]],Terms[[3]],sep="~")[[2]],paste(Terms[[3]])[3],sep="+")
-    formula1<-formula(formula1)
+    formula1 <- paste(paste(Terms[[2]][[2]], Terms[[3]], sep = "~")[[2]], 
+        paste(Terms[[3]])[3], sep = "+")
+    formula1 <- formula(formula1)
     fr <- FrailtyFrames(mc, formula1, contrasts)
     namesX <- names(fr$fixef)
     namesX <- namesX[-1]
     namesY <- names(fr$mf)[1]
     FL <- HGLMFactorList(formula1, fr, 0L, 0L)
     namesRE <- FL$namesRE
-    y <- matrix(Y[,1], length(fr$Y), 1)
+    leftT<-0
+    if (ncol(Y)==3) leftT<-1
+    if (leftT==0) y <- matrix(Y[, 1], length(fr$Y), 1)
+    if (leftT==0) L0 <- matrix(0, length(fr$Y), 1)
+    if (leftT==1) y <- matrix(Y[, 2], length(fr$Y), 1)
+    if (leftT==1) L0 <- matrix(Y[, 1], length(fr$Y), 1)
     x <- fr$X
     z <- FL$Design
-    n<-nrow(x)
-    p<-ncol(x)
-    x1 <- x[1:n,2:p]
-    x2 <- matrix(x1,n,p-1)
+    n <- nrow(x)
+    p <- ncol(x)
+    x1 <- x[1:n, 2:p]
+    x2 <- matrix(x1, n, p - 1)
     x <- x2
-    n<-nrow(x)
-    p<-ncol(x)
+    n <- nrow(x)
+    p <- ncol(x)
     nrand <- length(z)
     q <- rep(0, nrand)
     for (i in 1:nrand) q[i] <- dim(z[[i]])[2]
-    del <-matrix(0,n,1)
-    del[,1] <- censor<-Y[,2]
+    del <- matrix(0, n, 1)
+    if (leftT==0) del[, 1] <- censor <- Y[, 2]
+    if (leftT==1) del[, 1] <- censor <- Y[, 3]
     SS <- FL$Subject
-    res1<-FrailtyMakeData(y,x,del,z)
-    y<-res1[1][[1]]
-    x<-res1[2][[1]]
-    del<-res1[3][[1]]
-    z<-res1[4][[1]]
-    Mi<-res1[5][[1]]
-    idx2<-res1[6][[1]]
-    t2<-res1[7][[1]]
-    di<-res1[8][[1]]
-    beta_h<-matrix(0,p,1)
+    res1 <- FrailtyMakeData(y, x, del, z, L0)
+    y <- res1[1][[1]]
+    x <- res1[2][[1]]
+    del <- res1[3][[1]]
+    z <- res1[4][[1]]
+    Mi <- res1[5][[1]]
+    idx2 <- res1[6][[1]]
+    t2 <- res1[7][[1]]
+    di <- res1[8][[1]]
+    beta_h <- matrix(0, p, 1)
     qcum <- cumsum(c(0, q))
-    v_h<-matrix(0,qcum[nrand+1],1)
+    v_h <- matrix(0, qcum[nrand + 1], 1)
+    rho <- 0.5
     alpha_h <- rep(0, nrand)
     varinit1 <- rep(0.1, nrand)
-    length_init<-length(varinit)
-    for (i in 1:length_init) varinit1[i]<-varinit[i]
+    length_init <- length(varinit)
+    for (i in 1:length_init) varinit1[i] <- varinit[i]
     for (i in 1:nrand) alpha_h[i] <- varinit1[i]
-    Max_iter<-Maxiter
-    err<-1
-    for ( i in 1:Max_iter) {
-        if (err>=convergence) {
-        if (RandDist=="Normal") res2<-PNfrailtyHL(x,z,y, del,Mi,idx2,t2, di, beta_h,v_h, alpha_h,mord,dord,varfixed=varfixed)
-        if (RandDist=="Gamma") res2<-PGfrailtyHL(x,z,y, del,Mi,idx2,t2, di, beta_h,v_h, alpha_h,mord,dord,varfixed=varfixed)
-        alpha_h<-res2[13][[1]]
-        alpha_h1<-res2[14][[1]]
-        beta_h<-res2[11][[1]]
-        beta_h1<-res2[9][[1]]
-        v_h<-res2[12][[1]]
-        v_h1<-res2[10][[1]]
-        temp4<-sum(abs(alpha_h-alpha_h1))+sum(abs(v_h-v_h1))+sum(abs(beta_h-beta_h1))
-        err<-temp4
-        alpha_h<-alpha_h1
-        se_beta<-res2[20][[1]]
-        print_i<-i
-        print_err<-err
+    Max_iter <- Maxiter
+    err <- 1
+    if (RandDist == "AR1") v_h <- matrix(0, n, 1)
+    for (ii in 1:Max_iter) {
+        if (err >= convergence) {
+            if (RandDist == "AR1") {
+                    IArho<-NULL
+                    nrand <- length(z)
+                    qrep<-colSums(z[[1]])
+                    qq <- length(qrep)
+                    for (i in 1:qq) {
+                         Arhotemp<-matrix(1,qrep[i],qrep[i])/(1-rho^2)
+                         for (j in 1:qrep[i]) {
+                             for (k in 1:qrep[i]) {
+                                 Arhotemp[j,k]<-Arhotemp[j,k]*rho^(abs(j-k))
+                             }
+                         }
+                         if (i==1) IArho<-solve(Arhotemp)
+                         if (i>1) IArho<-dbind(IArho,solve(Arhotemp))
+                  }
+            }
+            if (RandDist == "Normal") 
+                res2 <- PNfrailtyHL(x, z, y, del, Mi, idx2, t2, 
+                  di, beta_h, v_h, alpha_h, mord, dord, varfixed = varfixed,varnonneg)
+            if (RandDist == "AR1") {
+                  res2 <- AR1frailtyHL(x, z, y, del, Mi, idx2, t2, 
+                  di, beta_h, v_h, alpha_h, mord, dord, varfixed = varfixed,varnonneg,IArho,rho,qrep)
+            }
+            if (RandDist == "Gamma") 
+                res2 <- PGfrailtyHL(x, z, y, del, Mi, idx2, t2, 
+                  di, beta_h, v_h, alpha_h, mord, dord, varfixed = varfixed,varnonneg)
+            alpha_h <- res2[13][[1]]
+            alpha_h1 <- res2[14][[1]]
+            beta_h <- res2[11][[1]]
+            beta_h1 <- res2[9][[1]]
+            v_h <- res2[12][[1]]
+            v_h1 <- res2[10][[1]]
+            Hinv <- res2[16][[1]]
+            rho_h1 <- rho
+            rho_h <- rho
+            se_rho_h <- 0.000
+            if (RandDist == "AR1") {
+                   rho_h <- res2[24][[1]]
+                   se_rho_h <- res2[25][[1]]
+            }
+            temp4 <- sum(abs(alpha_h - alpha_h1)) + sum(abs(v_h - 
+                v_h1)) + sum(abs(beta_h - beta_h1)) +sum(abs(rho_h-rho_h1))
+            rho <- rho_h
+            err <- temp4
+            alpha_h <- alpha_h1
+            se_beta <- res2[20][[1]]
+            u_h <- NULL
+            Hinv_u <- NULL
+            if (RandDist == "Gamma") {
+                 u_h<-res2[23][[1]]
+                 Hinv_u<-res2[24][[1]]
+            }
+            print_err <- err
+            print_i <- ii
         }
     }
     names(print_i) <- "iteration : "
     print(print_i)
     names(print_err) <- "convergence : "
     print(print_err)
-    if (err<convergence) print("converged") 
-    if (err>convergence) print("did not converge")
-###############################################################
-############# print estimates ###########################
-###############################################################
-    result<-list(0)
-    names(result)[1]<-"Model"
-    sum_init<-sum(abs(varinit))
-    if (varfixed==TRUE && sum_init<0.00001) {
-         print("Results from the Cox model")
-         result$Model<-"Cox model"
-    } else {
-    if (RandDist=="Gamma") {
-         print("Results from the gamma frailty model")
-         result$Model<-"gamma frailty model"
+    if (err < convergence) 
+        print("converged")
+    if (err > convergence) 
+        print("did not converge")
+    result <- list(0)
+    names(result)[1] <- "Model"
+    sum_init <- sum(abs(varinit))
+    if (varfixed == TRUE && sum_init < 1e-05) {
+        print("Results from the Cox model")
+        result$Model <- "Cox model"
     }
-    if (RandDist=="Normal") {
-         print("Results from the log-normal frailty model")
-         result$Model<-"log-normal frailty model"
+    else {
+        if (RandDist == "Gamma") {
+            print("Results from the gamma frailty model")
+            result$Model <- "gamma frailty model"
+        }
+        if (RandDist == "Normal") {
+            print("Results from the log-normal frailty model")
+            result$Model <- "log-normal frailty model"
+        }
+        if (RandDist == "AR1") {
+            print("Results from the log-normal frailty model with AR(1)")
+            result$Model <- "log-normal frailty model with AR(1)"
+        }
     }
-    }
-    nevent<-sum(censor)
+    nevent <- sum(censor)
     print("Number of data : ")
     print(n)
     print("Number of event : ")
     print(nevent)
     print("Model for conditional hazard : ")
-    result$formula<-formula
+    result$formula <- formula
     print(formula)
-    if (mord==0 && dord==1) {
-         print("Method : HL(0,1)")   
-         result$Method<-"HL(0,1)"
+    if (mord == 0 && dord == 1) {
+        print("Method : HL(0,1)")
+        result$Method <- "HL(0,1)"
     }
-    if (mord==0 && dord==2) {
-         print("Method : HL(0,2)")     
-         result$Method<-"HL(0,2)"
+    if (mord == 0 && dord == 2) {
+        print("Method : HL(0,2)")
+        result$Method <- "HL(0,2)"
     }
-    if (mord==1 && dord==1) {
-         print("Method : HL(1,1)")   
-         result$Method<-"HL(1,1)"
+    if (mord == 1 && dord == 1) {
+        print("Method : HL(1,1)")
+        result$Method <- "HL(1,1)"
     }
-    if (mord==1 && dord==2) {
-         print("Method : HL(1,2)")
-         result$Method<-"HL(1,2)"
+    if (mord == 1 && dord == 2) {
+        print("Method : HL(1,2)")
+        result$Method <- "HL(1,2)"
     }
     print("Estimates from the mean model")
-    z_beta<-beta_h/se_beta
+    z_beta <- beta_h/se_beta
     pval <- 2 * pnorm(abs(z_beta), lower.tail = FALSE)
-    beta_coeff<-cbind(beta_h,se_beta,z_beta,pval)
-    colnames(beta_coeff) <- c("Estimate", "Std. Error", "t-value", "p-value")
+    beta_coeff <- cbind(beta_h, se_beta, z_beta, pval)
+    colnames(beta_coeff) <- c("Estimate", "Std. Error", "t-value", 
+        "p-value")
     rownames(beta_coeff) <- namesX
-    result$FixCoef<-beta_coeff
-    print(beta_coeff,4)
-###############################################################
-############# se for lambda         ###########################
-###############################################################
-    if (RandDist=="Normal") res3<-PNFrailty_SE.h(res2,nrand,q,qcum,dord,varfixed=varfixed)
-    if (RandDist=="Gamma") res3<-PGFrailty_SE.h(res2,nrand,q,qcum,dord,varfixed=varfixed)
-    print("Estimates from the dispersion model")
-    se_alpha_h<-res3[1][[1]]
-    hlike<--2*res3[2][[1]]
-    p1<--2*res3[3][[1]]
-    p2<--2*res3[4][[1]]
-    p3<--2*res3[5][[1]]
-    p0<--2*res3[6][[1]]
-    p4<-p3-(p1-p2)
-    df1<-res3[7][[1]]
-    if (varfixed==FALSE) z_lam<-alpha_h/se_alpha_h
-    for (i in 1:nrand) {
-       if (alpha_h[i]<0.00001) alpha_h[i]<-0
+    result$FixCoef <- beta_coeff
+    print(beta_coeff, 4)
+    if (RandDist == "Normal") 
+        res3 <- PNFrailty_SE.h(res2, nrand, q, qcum, dord, varfixed = varfixed)
+    if (RandDist == "AR1") {
+            n <- nrow(x)
+            zz1 <- diag(1,n,n)
+            nrand1 <- 1
+            qq1 <- rep(0, nrand1)
+            for (i in 1:nrand1) qq1[i] <- dim(zz1)[2]
+            qcum1 <- cumsum(c(0, qq1))
+            res3 <- AR1Frailty_SE.h(res2, nrand1, qq1, qcum1, dord, varfixed = varfixed, IArho)
     }
-    lam_coeff<-cbind(alpha_h,se_alpha_h)
+    if (RandDist == "Gamma") 
+        res3 <- PGFrailty_SE.h(res2, nrand, q, qcum, dord, varfixed = varfixed)
+    print("Estimates from the dispersion model")
+    se_alpha_h <- res3[1][[1]]
+    hlike <- -2 * res3[2][[1]]
+    p1 <- -2 * res3[3][[1]]
+    p2 <- -2 * res3[4][[1]]
+    p3 <- -2 * res3[5][[1]]
+    p0 <- -2 * res3[6][[1]]
+    p4 <- p3 - (p1 - p2)
+    df1 <- res3[7][[1]]
+    if (varfixed == FALSE & RandDist != "AR1") 
+        z_lam <- alpha_h/se_alpha_h
+    for (i in 1:nrand) {
+        if (alpha_h[i] < 1e-05) 
+            alpha_h[i] <- 0
+    }
+    lam_coeff <- cbind(alpha_h, se_alpha_h)
     colnames(lam_coeff) <- c("Estimate", "Std. Error")
+    ####################################################
+      if (RandDist=="AR1") {
+      lam_coeff <- cbind(alpha_h)
+      colnames(lam_coeff) <- c("Estimate")
+      }
+    ##################################################
     rownames(lam_coeff) <- namesRE
-    print(lam_coeff,4)
-    result$RandCoef<-lam_coeff
-###############################################################
-############# -2*Likelihoods         ##########################
-###############################################################
-    if (mord==0 && dord==1) like_value<-cbind(p0,hlike,p1)
-    if (mord==0 && dord==1) colnames(like_value) <- c("-2h0","-2*hp","-2*p_b,v(hp)")
-    if (mord==0 && dord==2) like_value<-cbind(p0,hlike,p1,p3)
-    if (mord==0 && dord==2) colnames(like_value) <- c("-2h0","-2*hp","-2*p_b,v(hp)","-2*s_b,v(hp)")
-    if (mord==1 && dord==1) like_value<-cbind(p0,hlike,p2,p1)
-    if (mord==1 && dord==1) colnames(like_value) <- c("-2h0","-2*hp","-2*p_v(hp)","-2*p_b,v(hp)")
-    if (mord==1 && dord==2) like_value<-cbind(p0,hlike,p2,p4,p1,p3)
-    if (mord==1 && dord==2) colnames(like_value) <- c("-2h0","-2*hp","-2*p_v(hp)","-2*s_v(hp)","-2*p_b,v(hp)","-2*s_b,v(hp)")
-    result$likelihood<-like_value
-    result$iter<-print_i
-    if (print_err<convergence) result$convergence<-"converged"
-    if (print_err>convergence) result$convergence<-"did not converge"
-    names(result$convergence) <- "convergence : "
-    print(like_value,5)
-    res4<-list(res2,res3)
-    caic<-p0+2*df1
-    n_lam<-nrow(lam_coeff)
-    if (varfixed==TRUE) n_lam<-0
-    maic<-p2+2*nrow(beta_coeff)+2*n_lam
-    if (varfixed==TRUE) maic<-hlike+2*nrow(beta_coeff)+2*n_lam
-    raic<-p1+2*n_lam
-    if (RandDist=="Gamma" && mord==1 && dord==2) maic<-p4+2*nrow(beta_coeff)+2*n_lam
-    if (RandDist=="Gamma" && mord==1 && dord==2) raic<-p3+2*n_lam
-    aic<-cbind(caic,maic,raic)
-    colnames(aic)<-c("cAIC","mAIC","rAIC")
-    print(aic,5)
-    result$aic<-aic
-    return(result)   
-}
+    print(lam_coeff, 4)
+    result$RandCoef <- lam_coeff
+    result$rho <- 0.000
+    if (RandDist == "AR1") {
+        rho_coeff <- cbind(rho_h)
 
+      #rho_coeff <- cbind(rho_h, se_rho_h)      
+
+        print("Estimates for rho in the AR(1) model")
+        print(rho_coeff,4)
+    }   
+    if (mord == 0 && dord == 1) 
+        like_value <- cbind(p0, hlike, p1)
+    if (mord == 0 && dord == 1) 
+        colnames(like_value) <- c("-2h0", "-2*hp", "-2*p_b,v(hp)")
+    if (mord == 0 && dord == 2) 
+        like_value <- cbind(p0, hlike, p1, p3)
+    if (mord == 0 && dord == 2) 
+        colnames(like_value) <- c("-2h0", "-2*hp", "-2*p_b,v(hp)", 
+            "-2*s_b,v(hp)")
+    if (mord == 1 && dord == 1) 
+        like_value <- cbind(p0, hlike, p2, p1)
+    if (mord == 1 && dord == 1) 
+        colnames(like_value) <- c("-2h0", "-2*hp", "-2*p_v(hp)", 
+            "-2*p_b,v(hp)")
+    if (mord == 1 && dord == 2) 
+        like_value <- cbind(p0, hlike, p2, p4, p1, p3)
+    if (mord == 1 && dord == 2) 
+        colnames(like_value) <- c("-2h0", "-2*hp", "-2*p_v(hp)", 
+            "-2*s_v(hp)", "-2*p_b,v(hp)", "-2*s_b,v(hp)")
+    result$likelihood <- like_value
+    result$iter <- print_i
+    if (print_err < convergence) 
+        result$convergence <- "converged"
+    if (print_err > convergence) 
+        result$convergence <- "did not converge"
+    names(result$convergence) <- "convergence : "
+    print(like_value, 5)
+    res4 <- list(res2, res3)
+    caic <- p0 + 2*df1
+    n_lam <- nrow(lam_coeff)
+   
+  ###################################################
+    if (varfixed == TRUE)  {
+     n_lam <- 0
+      maic <- hlike + 2*nrow(beta_coeff) + 2 * n_lam
+     } else {
+     maic <- p2 + 2*nrow(beta_coeff) + 2 * n_lam
+     }
+     raic <- p1 + 2*n_lam
+
+
+ ###################################################
+ ###################################################
+   disp_coeff <- cbind(alpha_h,rho_h)  
+   n_disp<- ncol(disp_coeff)  
+  
+   if (RandDist == "AR1"){   
+   maic <- p2 + 2*nrow(beta_coeff) + 2*n_disp
+   raic <- p1 + 2*n_disp
+   }
+ ####################################################
+
+    if (RandDist == "Gamma" && mord == 1 && dord == 2) 
+        maic <- p4 + 2 * nrow(beta_coeff) + 2 * n_lam
+    if (RandDist == "Gamma" && mord == 1 && dord == 2) 
+        raic <- p3 + 2 * n_lam
+
+    aic <- cbind(caic, maic, raic)
+    colnames(aic) <- c("cAIC", "pAIC", "rAIC")
+    #colnames(aic) <- c("cAIC", "mAIC", "rAIC")
+
+    print(aic, 5)
+    result$aic <- aic
+    result$v_h <- v_h
+    result$Hinv <- Hinv
+    result$p <- p
+    result$q <- q
+    if (RandDist=="Gamma") result$u_h<-u_h
+    if (RandDist=="Gamma") result$Hinv_u<-Hinv_u
+    return(result)
+}
