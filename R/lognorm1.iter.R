@@ -1,5 +1,4 @@
-lognorm1.iter <-
-function(X,B,Z,v,penalty,alpha,tun1=NULL,tun2=NULL,di,Mi,idx2,del){
+lognorm1.iter <- function(X,B,Z,v,penalty,alpha,tun1=NULL,tun2=NULL,di,Mi,idx2,del,varfixed){
 
 n<-nrow(X)
 p<-ncol(X)
@@ -15,9 +14,12 @@ convergeind<-c(0)
 
 while((rep<2000)&(err>0.0000001)&(err<5)){
 
-result<-lognorm1(X=X,B=iB,Z=Z,v=iv,penalty=penalty,alpha=ialpha,tun1=tun1,tun2=tun2,di,Mi,idx2,del)
+if (varfixed==TRUE) result<-lognorm(X=X,B=iB,Z=Z,v=iv,penalty=penalty,alpha=ialpha,tun1=tun1,tun2=tun2,di,Mi,idx2,del,varfixed)
+else result<-lognorm1(X=X,B=iB,Z=Z,v=iv,penalty=penalty,alpha=ialpha,tun1=tun1,tun2=tun2,di,Mi,idx2,del,varfixed)
 
 err<-sum(abs(ialpha-result[[3]]))
+
+if (varfixed==TRUE){err<-max(abs(iB-result[[1]]))}
 
 #print("==== rep & err ===")
 #print(c(rep,err))
@@ -49,11 +51,11 @@ qs<-rep(0,nrand)
 z<-NULL;v_h1<-NULL; alpha_h1<-NULL; rand.idx<-NULL
 
 for (i in 1:nrand){
-	z<-cbind(z,Zs[[i]])
-	qs[i]<-dim(Zs[[i]])[2]
-	v_h1<-c(v_h1,iv[[i]])
-	alpha_h1<-c(alpha_h1,rep(ialpha[i],qs[i]))
-	rand.idx<-c(rand.idx, rep(i, qs[i]))	
+        z<-cbind(z,Zs[[i]])
+        qs[i]<-dim(Zs[[i]])[2]
+        v_h1<-c(v_h1,iv[[i]])
+        alpha_h1<-c(alpha_h1,rep(ialpha[i],qs[i]))
+        rand.idx<-c(rand.idx, rep(i, qs[i]))    
 }
 
 q<-sum(qs)
@@ -121,6 +123,10 @@ WL=hft/(abs(beta_h1))
 }
 iH=solve(mmat+n*WL)%*%(mmat)
 elam=sum(diag(iH))
+
+########################################
+if (varfixed==TRUE) {pvh<-hlike1}
+########################################
  
  BIC = -2*pvh+log(n)*elam
 }
@@ -137,3 +143,4 @@ return(result)
 }
 
 }
+

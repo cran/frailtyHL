@@ -4,7 +4,7 @@
 \title{Renal transplant data}
 \description{
 This is a data set from a clinical study to investigate the chronic renal allograft
-dysfunction in renal transplants (Ha et al., 2018).
+dysfunction in renal transplants (Ha et al., 2017).
 Data were available from 87 male and 25 female renal transplanted patients
 who survived more than 4 years after transplant. For each patient,
 both repeated-measure outcomes (serum creatinine levels) at several time points
@@ -29,7 +29,7 @@ and a terminating event time (graft-loss time) were observed.
 Ha, I. D., Noh, M. and Lee, Y. (2017). H-likelihood approach for joint modelling of longitudinal outcomes and time-to-event data.
 Biometrical Journal, 59, 1122--1143.
 
-Ha, I. D., Jeong, J.H. and Lee, Y. (2018). Statistical modelling of survival data with
-random effects: h-likelihood approach. Springer.
+Ha, I. D., Jeong, J.-H. and Lee, Y. (2017). Statistical modelling of survival data with
+random effects: h-likelihood approach. Springer, in press.
 }
 

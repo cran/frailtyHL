@@ -1,7 +1,6 @@
 mlmfit1 <-
-function(jm1,data,Maxiter=200) {
+function(jm1,data_surv,Maxiter=200) {
  mc <- match.call()
- data_surv=data
 
 
  Vfunc <- function(x) {

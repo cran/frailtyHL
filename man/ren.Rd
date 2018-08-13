@@ -32,6 +32,6 @@ The number of tumors ranges from 0 to 13.
 Gail, M.H. Santner, T.J. and Brown, C.C. (1980), An analysis of comparative carcinogenesis experiments
 based on multiple times to tumor. Biometrics, 36, 255-266.
 
-Ha, I. D., Jeong, J.H. and Lee, Y. (2018). Statistical modelling of survival data with
-random effects: h-likelihood approach. Springer.
+Ha, I. D., Jeong, J. H. and Lee, Y. (2017). Statistical modelling of survival data with
+random effects: h-likelihood approach. Springer, in press.
 }

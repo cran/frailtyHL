@@ -29,13 +29,13 @@ structure(function (formula, fr, rmInt, drop)
             mf)
         if (rmInt) {
             if (is.na(icol <- match("(Intercept)", colnames(mm)))) 
-                break
+#                break
             if (ncol(mm) < 2) 
                 stop("lhs of a random-effects term cannot be an intercept only")
             mm <- mm[, -icol, drop = FALSE]
         }
-        ans <- list(f = ff, A = do.call(rBind, lapply(seq_len(ncol(mm)), 
-            function(j) im)), Zt = do.call(rBind, lapply(seq_len(ncol(mm)), 
+        ans <- list(f = ff, A = do.call(rbind, lapply(seq_len(ncol(mm)), 
+            function(j) im)), Zt = do.call(rbind, lapply(seq_len(ncol(mm)), 
             function(j) {
                 im@x <- mm[, j]
                 im
@@ -72,8 +72,8 @@ structure(function (formula, fr, rmInt, drop)
 "        else tempexp <- x[[2]]", "        mm <- model.matrix(eval(substitute(~expr, list(expr = tempexp))), ", 
 "            mf)", "        if (rmInt) {", "            if (is.na(icol <- match(\"(Intercept)\", colnames(mm)))) ", 
 "                break", "            if (ncol(mm) < 2) ", "                stop(\"lhs of a random-effects term cannot be an intercept only\")", 
-"            mm <- mm[, -icol, drop = FALSE]", "        }", "        ans <- list(f = ff, A = do.call(rBind, lapply(seq_len(ncol(mm)), ", 
-"            function(j) im)), Zt = do.call(rBind, lapply(seq_len(ncol(mm)), ", 
+"            mm <- mm[, -icol, drop = FALSE]", "        }", "        ans <- list(f = ff, A = do.call(rbind, lapply(seq_len(ncol(mm)), ", 
+"            function(j) im)), Zt = do.call(rbind, lapply(seq_len(ncol(mm)), ", 
 "            function(j) {", "                im@x <- mm[, j]", 
 "                im", "            })), ST = matrix(0, ncol(mm), ncol(mm), dimnames = list(colnames(mm), ", 
 "            colnames(mm))))", "        if (drop) {", "            ans$A@x <- rep(0, length(ans$A@x))", 

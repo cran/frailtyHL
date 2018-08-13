@@ -1,15 +1,14 @@
-import("methods")
-import("Matrix")
-import("numDeriv")
-import("survival")
-import("cmprsk")
 importFrom("graphics", "hist", "lines", "par", "plot")
 importFrom("stats", "Gamma", "as.formula", "binomial", "dnorm",
 "gaussian", "glm", "is.empty.model", "model.matrix",
 "model.offset", "model.response", "model.weights",
 "dbinom", "dgamma", "pnorm", "poisson", "qnorm",
 "cor","dist","qqline","qqnorm","supsmu","var")
-importFrom("methods","as", "validObject")
+importFrom("methods","as", "validObject","is")
 importFrom("stats", "contrasts", "model.extract", "model.frame",
              "pchisq", "terms", "uniroot")
+importFrom("Matrix", "t", "drop0", "bdiag")
+importFrom("survival", "survfit", "coxph")
+importFrom("cmprsk", "crr")
+importFrom("utils", "data")
 export("frailtyHL","jointmodeling","hlike.frailty","jmfit","frailty.vs","mlmfit","CmpRsk")

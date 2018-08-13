@@ -377,7 +377,7 @@ converge=0
 if(max(abs(c(beta[,,i+1], theta[,,i+1])-
 c(beta[,,i], theta[,,i])), na.rm=TRUE) < TOL){
 converge=1
-break
+# break
 }
 }
 # Correction: Profile h-likelihood and Adjusted Profile h-likelihood

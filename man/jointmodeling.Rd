@@ -2,8 +2,8 @@
 \alias{jointmodeling}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Defining the Fixed and Random Models for the Mean and Dispersion Parameters in Joint Models}
-\description{The jointmodeling specifies jointly both the mean model in the linear mixed model
-and the hazard model in the frailty model.}
+\description{The jointmodeling specifies jointly both the hazard model in the frailty model and 
+the mean model in the linear mixed model.}
 \usage{
 jointmodeling(Model = "mean", RespDist = "gaussian", Link = NULL, LinPred = "constant", 
 RandDist = NULL, Offset = NULL)

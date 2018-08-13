@@ -2,7 +2,7 @@
 \alias{bladder}
 \docType{data}
 \title{Bladder Cancer Data}
-\description{Bladder is an extension of the subset data "bladder0" to competing risks with 396 patients with
+\description{Bladder is an extension of Bladder0 to competing risks with 396 patients with
 bladder cancer from 21 centers, focusing on two competing endpoints, i.e, time to
 first bladder recurrence (an event of interest; Type 1 event) and time to death prior
 to recurrence (competing event; Type 2 event).
@@ -31,6 +31,6 @@ Sylvester, R., van der Meijden, A.P.M., Oosterlinck, W., Witjes, J., Bouffioux, 
 Predicting recurrence and progression in individual patients with stage Ta T1 bladder cancer using EORTC risk tables: a combined analysis of
 2596 patients from seven EORTC trials. European Urology, 49, 466-477.
 
-Ha, I.D., Lee, M., Oh, S., Jeng, J.H., Sylvester, R. and Lee, Y. (2014).
-Variable selection in subdistribution hazard frailty models with competing risks data. Statistics in Medicine, 33, 4590-4604.
+Ha, I.D., Sylvester, R., Legrand, C. and MacKenzie, G. (2011).
+Frailty modelling for survival data from multi-centre clinical trials. Statistics in Medicine, 30, 28-37.
 }

@@ -2,12 +2,11 @@
 \alias{frailty.vs}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Penalized Variable Selection for Frailty Models}
-\description{frailty.vs is used as variable-selection procedures 
-(LASSO, SCAD and HL) of fixed effects in general frailty models allowing for
-univariate, multi-level or correlated frailities.}
+\description{frailty.vs is variable-selection procedures 
+(LASSO, SCAD and HL) of fixed effects in frailty models.}
 \usage{
 frailty.vs(formula, model, penalty, data, B = NULL, v = NULL, 
-alpha = NULL, tun1 = NULL, tun2 = NULL)
+alpha = NULL, tun1 = NULL, tun2 = NULL, varfixed = FALSE, varinit = 0.1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,7 +20,9 @@ time : survival time, status : censoring indicator having 1 (0) for uncensored
   \item{B}{Initial values of fixed effects}
   \item{v}{Initial values of random effects. Zeros are default}
   \item{alpha}{Initial value of variance of random effects.}
-  \item{tun1}{Tuning parameter for LASSO, SCAD and HL}
-  \item{tun2}{Another tuning parameter for HL}
+  \item{tun1}{Tuning parameter gamma for LASSO, SCAD and HL}
+  \item{tun2}{Tuning parameter omega for HL}
+  \item{varfixed}{Logical value: if TRUE (FALSE), the value of one or more of the variance terms for the frailties is fixed (estimated).}
+  \item{varinit}{Starting values for frailties, the default is 0.1.} 
 }
 

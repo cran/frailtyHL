@@ -1,5 +1,4 @@
-frailty1.vs <-
-function(formula,model,penalty,data,B="null",v="null",alpha="null",tun1="null",tun2="null"){
+frailty1.vs <- function(formula,model,penalty,data,B="null",v="null",alpha="null",tun1="null",tun2="null",varfixed=FALSE,varinit=0.1){
 
     Call <- match.call()
     mc <- match.call()
@@ -51,7 +50,7 @@ function(formula,model,penalty,data,B="null",v="null",alpha="null",tun1="null",t
     del <- as.numeric(res1[3][[1]])
     z <- res1[4][[1]]
 
-    	
+        
     Mi <- as.matrix(res1[5][[1]])
     idx2 <- res1[6][[1]]
     t2 <- as.numeric(res1[7][[1]])
@@ -72,6 +71,9 @@ alpha<-rep(0.1, nrand)
 }
 
 
+if (varfixed==TRUE){alpha<-rep(max(varinit, 1e-06),nrand)}
+
+
 if(length(B)==1){
 if(is.null(B)){
 B<-as.numeric(frailtyHL(formula,data=data)$FixCoef[,1])
@@ -83,25 +85,23 @@ B<-as.numeric(frailtyHL(formula,data=data)$FixCoef[,1])
 if((length(tun1)!=1)|(length(tun2)!=1)){
 
 if (model=="lognorm"){
-result<-lognorm1.BIC(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
+result<-lognorm1.BIC(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del,varfixed)
 }
 
-if (model=="gamma"){
-# result<-gammapv.BIC(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-result<-lognorm1.BIC(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-}
+#if (model=="gamma"){
+#result<-gammapv.BIC(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
+#}
 }
 
 else{
 
 if (model=="lognorm"){
-result<-lognorm1.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
+result<-lognorm1.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del,varfixed)
 }
 
-if (model=="gamma"){
-# result<-gammapv.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-result<-lognorm1.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-}
+#if (model=="gamma"){
+#result<-gammapv.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
+#}
 }
 
 

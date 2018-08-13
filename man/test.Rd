@@ -32,9 +32,9 @@ with 25.2\% censoring, the proportions of Type 1 and Type 2 events are 53.2\% an
 Beyersmann, J., Dettenkofer, M., Bertz, H. and Schumacher, M. (2007). A competing risks analysis of bloodstream infection after stem-cell
 transplantation using subdistribution hazardsa and cause-specific hazards. Statistics in Medicine, 26, 5360-5369.
 
-Christian, N.J., Ha, I.D. and Jeong, J.H. (2016). Hierarchical likelihood inference on clustered competing risks data. Statistics in Medicine, 35, 251-267.
+Christian, N. J., Ha, I. D. and Jeong, J. H. (2016). Hierarchical likelihood inference on clustered competing risks data. Statistics in Medicine, 35, 251-267.
 
-Ha, I.D., Jeong, J.H. and Lee, Y. (2018). Statistical modelling of survival data with
-random effects: h-likelihood approach. Springer.
+Ha, I. D., Jeong, J. H. and Lee, Y. (2017). Statistical modelling of survival data with
+random effects: h-likelihood approach. Springer, in press.
 }
 

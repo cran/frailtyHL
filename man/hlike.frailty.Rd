@@ -2,10 +2,9 @@
 \alias{hlike.frailty}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Competing Risk Frialty Models using H-Likelihood}
-\description{Perform hierarchical likelihood estimation of the univariate frailty model, cause-specific 
-hazard frailty model and subdistribution hazard (subhazard) frailty model. 
-It assumes either a univariate normal or multivariate
-normal distribution for the random effects v, where different covariance structures can be
+\description{Perform hierarchical likelihood estimation of the univariate frailty model, cause-specific frailty
+model and subhazard frailty model. Assuming either a univariate normal or multivariate
+normal distribution for the random effects V, where different covariance structures can be
 assumed for the multivariate normal distribution.
 }
 \usage{

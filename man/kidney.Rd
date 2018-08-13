@@ -25,7 +25,7 @@ removed for other reasons, in which case the observation is censored.
   }
 }
 \references{
-McGilchrist, C.A. and Aisbett, C.W. (1991). Regression with frailty in survival analysis. Biometrics,
+McGilchrist, C. A. and Aisbett, C. W. (1991). Regression with frailty in survival analysis. Biometrics,
 47, 461-466.
 
 Therneasu, T. (2012). survival: survival analysis, including penalised likelihood. http://CRAN.Rproject.

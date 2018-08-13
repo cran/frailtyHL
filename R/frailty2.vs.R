@@ -82,11 +82,9 @@ if (model=="lognorm"){
 result<-lognorm2.GCV(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
 }
 
-if (model=="gamma"){
-# result<-gammapv.GCV(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-result<-lognorm2.GCV(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-
-}
+#if (model=="gamma"){
+#result<-gammapv.GCV(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
+#}
 }
 
 else{
@@ -95,10 +93,9 @@ if (model=="lognorm"){
 result<-lognorm2.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
 }
 
-if (model=="gamma"){
-# result<-gammapv.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-result<-lognorm2.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
-}
+#if (model=="gamma"){
+#result<-gammapv.iter(X=x,B,Z=z,v,penalty,alpha,tun1,tun2,di,Mi,idx2,del)
+#}
 }
 
 

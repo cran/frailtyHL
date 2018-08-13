@@ -1,5 +1,4 @@
-frailty.vs <-
-function(formula,model,penalty,data,B=NULL,v=NULL,alpha=NULL,tun1=NULL,tun2=NULL){
+frailty.vs<-function(formula,model,penalty,data,B=NULL,v=NULL,alpha=NULL,tun1=NULL,tun2=NULL,varfixed=FALSE,varinit=0.1){
 
     Call <- match.call()
     mc <- match.call()
@@ -41,7 +40,11 @@ function(formula,model,penalty,data,B=NULL,v=NULL,alpha=NULL,tun1=NULL,tun2=NULL
     alphas<-alpha
     nrand <- length(z)
     n.alpha<-length(alphas)
-    if (n.alpha<=nrand) result<-frailty1.vs(formula=formula,model=model,penalty=penalty,data=data,B=B,v=v,alpha=alpha,tun1=tun1,tun2=tun2)
-    else result<-frailty2.vs(formula=formula,model=model,penalty=penalty,data=data,B=B,v=v,alpha=alpha,tun1=tun1,tun2=tun2)
+#    print(varfixed)
+    if (varfixed==TRUE) result<-frailty1.vs(formula=formula,model=model,penalty=penalty,data=data,B=B,v=v,alpha=alpha,tun1=tun1,tun2=tun2,varfixed=varfixed,varinit=varinit)
+    else {
+        if (n.alpha<=nrand) result<-frailty1.vs(formula=formula,model=model,penalty=penalty,data=data,B=B,v=v,alpha=alpha,tun1=tun1,tun2=tun2,varfixed=varfixed,varinit=varinit)
+        else result<-frailty2.vs(formula=formula,model=model,penalty=penalty,data=data,B=B,v=v,alpha=alpha,tun1=tun1,tun2=tun2)
+    }
     return(result)
 }

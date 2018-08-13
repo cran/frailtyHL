@@ -32,10 +32,10 @@ study.}
   }
 }
 \references{
-Fleming, T.R. and Harrington, D.R. (1991). Counting processes and survival analysis. Wiley:
+Fleming, T. R. and Harrington, D. R. (1991). Counting processes and survival analysis. Wiley:
 New York.
 
-Therneau, T.M. (2017). survival: survival analysis, including penalised likelihood. http://CRAN.Rproject.
-org/package=survival. R pakcage version 2.41-3.
+Therneasu, T. (2012). survival: survival analysis, including penalised likelihood. http://CRAN.Rproject.
+org/package=survival. R pakcage version 2.36-14.
 }
 

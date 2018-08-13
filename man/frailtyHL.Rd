@@ -38,26 +38,32 @@ default=1.}
 errors. Also, frailtyHL makes it possible to fit models where the frailty distribution is normal and
 gamma and estimate variance components when frailty structure is allowed to be shared or nested.}
 \references{
-Ha, I.D. and Lee, Y. (2003). Estimating frailty models via Poisson Hierarchical generalized linear
+Ha, I. D. and Lee, Y. (2003). Estimating frailty models via Poisson Hierarchical generalized linear
 models. Journal of Computational and Graphical Statistics, 12, 663-681.
 
-Ha, I.D. and Lee, Y. (2005). Comparison of hierarchical likelihood versus orthodox best linear
+Ha, I. D. and Lee, Y. (2005). Comparison of hierarchical likelihood versus orthodox best linear
 unbiased predictor approaches for frailty models. Biometrika, 92, 717-723.
 
-Ha, I.D., Lee, Y. and Song, J.K. (2001). Hierarchical likelihood approach for frailty models.
+Ha, I. D., Lee, Y. and Song, J. K. (2001). Hierarchical likelihood approach for frailty models.
 Biometrika, 88, 233-243.
 
-Lee, Y., Nelder, J.A. and Pawitan, Y. (2017). Generalised linear models with random effects:
+Lee, Y., Nelder, J. A. and Pawitan, Y. (2017). Generalised linear models with random effects:
 unified analysis via h-likelihood. 2nd Edition. Chapman and Hall: London.}
 \examples{
 #### Analysis of kidney data
 data(kidney)
+#### Normal frailty model using order = 0, 1 for the mean and dispersion
+kidney_ln01<-frailtyHL(Surv(time,status)~sex+age+(1|id),kidney,
+RandDist="Normal",mord=0,dord=1)
 #### Normal frailty model using order = 1, 1 for the mean and dispersion
-kidney_ln11<-frailtyHL(Surv(time,status)~sex+age+(1|id),kidney,
-RandDist="Normal",mord=1,dord=1,Maxiter = 2)
+#kidney_ln11<-frailtyHL(Surv(time,status)~sex+age+(1|id),kidney,
+#RandDist="Normal",mord=1,dord=1)
+#### Gamma frailty model using order = 0, 2 for the mean and dispersion
+#kidney_g02<-frailtyHL(Surv(time,status)~sex+age+(1|id),kidney,
+#RandDist="Gamma",mord=0,dord=2)
 #### Gamma frailty model using order = 1, 2 for the mean and dispersion
-kidney_g12<-frailtyHL(Surv(time,status)~sex+age+(1|id),kidney,
-RandDist="Gamma",mord=1,dord=2,Maxiter = 2)
+#kidney_g12<-frailtyHL(Surv(time,status)~sex+age+(1|id),kidney,
+#RandDist="Gamma",mord=1,dord=2)
 
 #### Analysis of rats data
 data(rats)
@@ -65,16 +71,16 @@ data(rats)
 rat_cox<-frailtyHL(Surv(time,status)~rx+(1|litter),rats,
 varfixed=TRUE,varinit=c(0))
 #### Normal frailty model using order = 1, 1 for the mean and dispersion
-rat_ln11<-frailtyHL(Surv(time,status)~rx+(1|litter),rats,
-RandDist="Normal",mord=1,dord=1,varinit=c(0.9),Maxiter=2)
+#rat_ln11<-frailtyHL(Surv(time,status)~rx+(1|litter),rats,
+#RandDist="Normal",mord=1,dord=1,varinit=c(0.9))
 #### Gamma frailty model using order = 1, 2 for the mean and dispersion
-rat_g12<-frailtyHL(Surv(time,status)~rx+(1|litter),rats,
-RandDist="Gamma",mord=1,dord=2,convergence=10^-4,varinit=c(0.9),Maxiter=2)
+#rat_g12<-frailtyHL(Surv(time,status)~rx+(1|litter),rats,
+#RandDist="Gamma",mord=1,dord=2,convergence=10^-4,varinit=c(0.9))
 
 #### Analysis of CGD data
 data(cgd)
 #### Multilevel normal frailty model using order = 1, 1 for the mean and dispersion
-cgd_ln11<-frailtyHL(Surv(tstop-tstart,status)~treat+(1|center)+(1|id),cgd,
-RandDist="Normal",mord=1,dord=1,convergence=10^-4,varinit=c(0.03,1.0),Maxiter = 2)
+#cgd_ln11<-frailtyHL(Surv(tstop-tstart,status)~treat+(1|center)+(1|id),cgd,
+#RandDist="Normal",mord=1,dord=1,convergence=10^-4,varinit=c(0.03,1.0))
 }
 

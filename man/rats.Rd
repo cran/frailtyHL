@@ -6,7 +6,7 @@
 Rats data set presented by Mantel et al. (1977) is based on a tumorigenesis study of 50 litters of
 female rats. For each litter, one rat was selected to receive the drug and the other two rats were
 placebo-treated controls. The survival time is the time to the development of tumor, measured in
-weeks. Death before occurrent of tumor yields a right-censored obervation; 40 rats developed a
+weeks. Death before occurrent of tumor yields a right-censored observation; 40 rats developed a
 tumor, leading to censoring of about 73 percent.
 }
 \usage{data("rats")}
@@ -20,7 +20,7 @@ tumor, leading to censoring of about 73 percent.
   }
 }
 \references{
-Mantel, N., Bohidar, N.R. and Ciminera, J.L. (1977). Mantel-Haenszel analyses of litter-matched
+Mantel,N., Bohidar N. R. and Ciminera, J. L. (1977). Mantel-Haenszel analyses of litter-matched
 time-to-response data, with modifications for recovery of interlitter information. Cancer Research,
 37, 3863-3868.
 
