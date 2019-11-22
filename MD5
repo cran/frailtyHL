@@ -1,4 +1,4 @@
-593e8c1f2f6004f4f973c811a0f712a3 *DESCRIPTION
+dcb18e1f1de0d6e68baaf0371d4ee43c *DESCRIPTION
 66b1ccb9d0bb0a8cd395c75bb4b40349 *NAMESPACE
 5eecc494027c14a6f4d64524ba90996d *R/AR1Frailty_SE.h.R
 6a1741c68d78a28dd5db0dfb42d3817e *R/AR1frailtyHL.R
@@ -21,7 +21,6 @@ be22a81a13cf7f2ff81b28cca5ad64ba *R/findplus.R
 53c6499f37416453735fa4a7a83ad6f4 *R/frailty.vs.R
 5eadaeeaf09887ea1f31b441df22b412 *R/frailty1.vs.R
 dc1249e41d0e1bf32168fc764a4edf70 *R/frailty2.vs.R
-1872db5912e4964a4e17dc36d17ad3ed *R/frailtyHL-internal.R
 66080f3ec420e2fd215013028e66f46f *R/frailtyHL.R
 767614495d49920a8e7b3bdb9207bdfa *R/hlike.frailty.R
 8250cf33dec442ef4e2a0edd174da98c *R/jmfit.R
@@ -37,7 +36,7 @@ d522bf9b7b04a52d16638b75cfd00660 *R/lognorm2.GCV.R
 031a91c5eb4d06a40658f4e2290fd2b9 *R/lognorm2.R
 b9c7cb90a306d0c301feb8078a373d5c *R/lognorm2.iter.R
 bf0515055827ff4042ad5894afebe3db *R/makeInteraction.R
-c676dd0d6871cf0b76d32405b4de73c5 *R/mlmfit.R
+f11b97184a2cda89ece9c8aef91b7242 *R/mlmfit.R
 d06909b5586d5d210d687fa1b4a16047 *R/mlmfit1.R
 12f56c20f03886c47bc6550e31054d94 *R/mlmfit2.R
 5df99164565a7f4d874272a0495fd6e4 *R/nobars.R
@@ -69,7 +68,7 @@ eaca41cc3147755915706b2239597549 *man/frailtyHL.Rd
 b154c96e05e0e207fe8a40b074872efe *man/jmfit.Rd
 ca0a0dc7cf58b9519c08db2a7ba3571f *man/jointmodeling.Rd
 c884af35c584a180bd639880f9a71ddd *man/kidney.Rd
-a9f9f169135e1a86ae8437f3894753ab *man/mlmfit.Rd
+eed760a4eb59734319257f0e4d106005 *man/mlmfit.Rd
 d84607e4a1af9f836c7ecd57cba367f4 *man/rats.Rd
 bea3630c218d018bbffe522fc02c6665 *man/ren.Rd
 cbb1d156e94703166ff627f396c99647 *man/renal.Rd
